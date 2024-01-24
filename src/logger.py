@@ -6,7 +6,7 @@ from datetime import datetime
 dir_path = os.path.join(os.getcwd(),'logs')
 os.makedirs(dir_path, exist_ok=True)
 # Today Date
-date = datetime.now().strftime('%Y_%m_%d_%H') #_%M_%S
+date = datetime.now().strftime('%Y_%m_%d_%H_%M') #_%M_%S
 # Log file name
 log_file_name = os.path.join(dir_path, f"{date}.log")
 
@@ -17,3 +17,5 @@ logging.basicConfig(filename=log_file_name,
                     format=FORMAT,
                     level=logging.INFO
                     )
+
+logging.info('Logging is Initiated...')
