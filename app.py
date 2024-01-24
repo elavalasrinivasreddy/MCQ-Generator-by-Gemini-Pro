@@ -1,7 +1,8 @@
 import streamlit as st
+import time
 # Set the page configuration
-st.set_page_config(page_title="MCQs_GP", 
-                   page_icon="random", 
+st.set_page_config(page_title="MCQs Creater App", 
+                   page_icon="🧐", 
                    layout="centered", 
                    initial_sidebar_state="auto", 
                    )
@@ -10,8 +11,8 @@ from src.data_util import read_input_file
 from src.logger import logging
 
 # Set the page title
-st.title(':red[MCQ] :blue[Creater Application]')
-st.caption('By :orange[Gemini-Pro] using Langchain')
+st.title(':red[MCQ] :blue[Generator]')
+st.caption('                By :orange[Gemini-Pro] using Langchain 🐦')
 
 with st.sidebar:
     # uploading the input file
@@ -32,16 +33,30 @@ with st.sidebar:
 
     if uploaded_file and number and level:
         data = read_input_file(uploaded_file)
-        if st.button("Generate", type="primary"):
-            with st.spinner('Generating Multi Choice Questions...'):
-                # Generating the response from the model
-                response = llm_chain.run(number = number,
-                                        difficulty = level,
-                                        text = data)
-                print(response)
-        try:
-            if response:
-                # write to UI
-                st.markdown(response)
-        except NameError:
-            pass
+        gen_button = st.button("Generate", key="gen_button")
+
+try:
+    if gen_button:
+        with st.spinner('Generating Multi Choice Questions...'):
+            # Generating the response from the model
+            response = llm_chain.run(number = number,
+                                    difficulty = level,
+                                    text = data)
+            # print(response)
+        logging.info('MCQ are generated')
+except NameError:
+    pass
+try:
+    if gen_button and response:
+        # write to UI
+        message_placeholder = st.empty()
+        full_response = ""
+        for chunk in response.replace('\n','  \n').replace('\t','----'):
+            full_response += chunk
+            time.sleep(0.005)
+            # Add a blinking cursor to simulate typing
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
+        # st.markdown(response)
+except NameError:
+    pass
